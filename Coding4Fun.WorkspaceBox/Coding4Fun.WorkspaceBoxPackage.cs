@@ -1,13 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
-using Microsoft.TeamFoundation.VersionControl.Client;
-using Microsoft.Win32;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.TeamFoundation.VersionControl.Client; 
 using Microsoft.VisualStudio.Shell;
 
 namespace aquila.Coding4Fun_WorkspaceBox
@@ -31,8 +28,12 @@ namespace aquila.Coding4Fun_WorkspaceBox
 	// This attribute is needed to let the shell know that this package exposes some menus.
 	[ProvideMenuResource("Menus.ctmenu", 1)]
 	[Guid(GuidList.guidCoding4Fun_WorkspaceBoxPkgString)]
+	[ProvideAutoLoad("F1536EF8-92EC-443C-9ED7-FDADF150DA82")]
 	public sealed class Coding4Fun_WorkspaceBoxPackage : Package
 	{
+		private int baseWorkspaceID = (int)PkgCmdIDList.cmdidWorkspaceListCmd;
+		private ArrayList workspaceList = new ArrayList { "branch" };
+
 		/// <summary>
 		/// Default constructor of the package.
 		/// Inside this method you can place any initialization code that does not require 
@@ -59,59 +60,54 @@ namespace aquila.Coding4Fun_WorkspaceBox
 			base.Initialize();
 
 			// Add our command handlers for menu (commands must exist in the .vsct file)
-			OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+			var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 			if (null != mcs)
 			{
-				// Create the command for the menu item.
-				CommandID menuCommandID = new CommandID(GuidList.guidCoding4Fun_WorkspaceBoxCmdSet, (int)PkgCmdIDList.cmdidTestCmd);
-				//MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
-				//mcs.AddCommand(menuItem);
-
-				OleMenuCommand myCommand = new OleMenuCommand(OnMyCommandHandler, menuCommandID);
-				myCommand.BeforeQueryStatus += OnBeforeQueryStatus;
-				mcs.AddCommand(myCommand);
+				for (int i = 0; i < workspaceList.Count; i++)
+				{
+					var cmdID = new CommandID(GuidList.guidCoding4Fun_WorkspaceBoxCmdSet, baseWorkspaceID + i);
+					var mc = new OleMenuCommand(OnExec, cmdID);
+					mc.BeforeQueryStatus += OnQueryStatus;
+					mcs.AddCommand(mc);
+				}
 			}
 		}
 		#endregion
 
-		/// <summary>
-		/// This function is the callback used to execute a command when the a menu item is clicked.
-		/// See the Initialize method to see how the menu item is associated to this function using
-		/// the OleMenuCommandService service and the MenuCommand class.
-		/// </summary>
-		private void MenuItemCallback(object sender, EventArgs e)
+		private void OnExec(object sender, EventArgs e)
 		{
-			// Show a Message Box to prove we were here
-			IVsUIShell uiShell = (IVsUIShell)GetService(typeof(SVsUIShell));
-			Guid clsid = Guid.Empty;
-			int result;
-			ErrorHandler.ThrowOnFailure(uiShell.ShowMessageBox(
-					   0,
-					   ref clsid,
-					   "Coding4Fun.WorkspaceBox",
-					   string.Format(CultureInfo.CurrentCulture, "Inside {0}.MenuItemCallback()", this.ToString()),
-					   string.Empty,
-					   0,
-					   OLEMSGBUTTON.OLEMSGBUTTON_OK,
-					   OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST,
-					   OLEMSGICON.OLEMSGICON_INFO,
-					   0,        // false
-					   out result));
+			//var menuCommand = sender as OleMenuCommand;
+			//if (null != menuCommand)
+			//{
+			//	int itemIndex = menuCommand.CommandID.ID - baseWorkspaceID;
+			//	if (itemIndex >= 0 && itemIndex < workspaceList.Count)
+			//	{
+			//		//var selection = workspaceList[itemIndex] as string;
+			//		for (int i = itemIndex; i > 0; i--)
+			//		{
+			//			workspaceList[i] = workspaceList[i - 1];
+			//		}
+			//	}
+			//}
 		}
 
-		public void OnBeforeQueryStatus(object sender, EventArgs e)
+		private void OnQueryStatus(object sender, EventArgs e)
 		{
-			var command = sender as OleMenuCommand;
-			if (null != command)
+			var menuCommand = sender as OleMenuCommand;
+			if (null != menuCommand)
 			{
-				WorkspaceInfo wi = Workstation.Current.GetLocalWorkspaceInfo(Environment.CurrentDirectory);
-				if (wi != null)
-					command.Text = wi.DisplayName;
+				var itemIndex = menuCommand.CommandID.ID - baseWorkspaceID;
+				if (itemIndex >= 0 && itemIndex < workspaceList.Count)
+				{
+					var value = workspaceList[itemIndex] as string;
+					if (value.Equals("branch"))
+					{
+						var wi = Workstation.Current.GetLocalWorkspaceInfo(Environment.CurrentDirectory);
+						value = wi != null ? wi.DisplayName : "No Workspace";
+					}
+					menuCommand.Text = value;
+				}
 			}
 		}
-
-		public void OnMyCommandHandler(object sender, EventArgs args)
-		{
-		} 
 	}
 }

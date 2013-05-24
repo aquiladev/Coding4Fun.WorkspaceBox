@@ -20,9 +20,6 @@
 	<!--This header contains the command ids for the menus provided by the shell. -->
 	<Extern href="vsshlids.h"/>
 
-
-
-
 	<!--The Commands section is where we the commands, menus and menu groups are defined.
 	  This section uses a Guid to identify the package that provides the command defined inside it. -->
 	<Commands package="guidCoding4Fun_WorkspaceBoxPkg">
@@ -42,6 +39,17 @@
 					<CommandName>Coding4Fun</CommandName>
 				</Strings>
 			</Menu>
+			<Menu guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceBoxMenu" type="MenuController" >
+				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" />
+				<CommandFlag>TextChanges</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<CommandFlag>TextIsAnchorCommand</CommandFlag>
+				<Strings>
+					<ButtonText></ButtonText>
+					<CommandName>WorkspaceBoxMenu</CommandName>
+				</Strings>
+			</Menu>
 		</Menus>
 
 		<!-- In this section you can define new menu groups. A menu group is a container for 
@@ -51,6 +59,9 @@
 		<Groups>
 			<Group guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" priority="0x0000">
 				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="Toolbar"/>
+			</Group>
+			<Group guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceBoxGroup" priority="0x0001">
+				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceBoxMenu"/>
 			</Group>
 		</Groups>
 
@@ -66,18 +77,23 @@
 			  <CommandFlag>DynamicVisibility</CommandFlag>
 		  If you do not want an image next to your command, remove the Icon node /> -->
 
-			<Button guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="cmdidworkspaceboxcmd" priority="0x0100" type="Button">
-				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" />
-				<CommandFlag>TextOnly</CommandFlag>
-				<CommandFlag>TextChanges</CommandFlag>
+			<Button guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="cmdidWorkspaceListCmd" type="Button">
+				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceBoxGroup" />
+				<CommandFlag>TextMenuUseButton</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<CommandFlag>DynamicItemStart</CommandFlag>
 				<Strings>
-					<ButtonText>WorkspaceBox...</ButtonText>
+					<CommandName>cmdidWorkspaceListCmd</CommandName>
+					<ButtonText></ButtonText>
 				</Strings>
 			</Button>
-
 		</Buttons>
 
 	</Commands>
+	<VisibilityConstraints>
+		<VisibilityItem guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="cmdidWorkspaceListCmd" context="UICONTEXT_SolutionExists"/>
+	</VisibilityConstraints>
 
 	<Symbols>
 		<!-- This is the package guid. -->
@@ -85,9 +101,11 @@
 
 		<!-- This is the guid used to group the menu commands together -->
 		<GuidSymbol name="guidCoding4Fun_WorkspaceBoxCmdSet" value="{458389fd-2202-4e28-9113-d4cb39de5a11}">
-			<IDSymbol name="cmdidworkspaceboxcmd" value="0x0100" />
+			<IDSymbol name="cmdidWorkspaceListCmd" value="0x0100" />
 			<IDSymbol name="Toolbar" value="0x1000" />
 			<IDSymbol name="ToolbarGroup" value="0x1050" />
+			<IDSymbol name="WorkspaceBoxMenu" value="0x0101" />
+			<IDSymbol name="WorkspaceBoxGroup" value="0x1051" />
 		</GuidSymbol>
 	</Symbols>
 

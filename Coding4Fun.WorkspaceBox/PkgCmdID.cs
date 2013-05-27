@@ -1,7 +1,7 @@
 ﻿// PkgCmdID.cs
 // MUST match PkgCmdID.h
 
-namespace aquila.Coding4Fun_WorkspaceBox
+namespace Aquila.Coding4Fun_WorkspaceBox
 {
 	static class PkgCmdIDList
 	{

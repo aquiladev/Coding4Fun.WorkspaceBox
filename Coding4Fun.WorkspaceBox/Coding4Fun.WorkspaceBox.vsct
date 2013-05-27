@@ -41,7 +41,6 @@
 			</Menu>
 			<Menu guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceBoxMenu" type="MenuController" >
 				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" />
-				<CommandFlag>TextChanges</CommandFlag>
 				<CommandFlag>DefaultInvisible</CommandFlag>
 				<CommandFlag>DynamicVisibility</CommandFlag>
 				<CommandFlag>TextIsAnchorCommand</CommandFlag>
@@ -79,13 +78,14 @@
 
 			<Button guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="cmdidWorkspaceListCmd" type="Button">
 				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceBoxGroup" />
-				<CommandFlag>TextMenuUseButton</CommandFlag>
+				<CommandFlag>TextOnly</CommandFlag>
+				<CommandFlag>TextChanges</CommandFlag>
 				<CommandFlag>DefaultInvisible</CommandFlag>
 				<CommandFlag>DynamicVisibility</CommandFlag>
 				<CommandFlag>DynamicItemStart</CommandFlag>
 				<Strings>
+					<ButtonText>Workspace...</ButtonText>
 					<CommandName>cmdidWorkspaceListCmd</CommandName>
-					<ButtonText></ButtonText>
 				</Strings>
 			</Button>
 		</Buttons>

@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
-using Microsoft.TeamFoundation.VersionControl.Client; 
+using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.VisualStudio.Shell;
 
-namespace aquila.Coding4Fun_WorkspaceBox
+namespace Aquila.Coding4Fun_WorkspaceBox
 {
 	/// <summary>
 	/// This is the class that implements the package exposed by this assembly.
@@ -31,8 +31,9 @@ namespace aquila.Coding4Fun_WorkspaceBox
 	[ProvideAutoLoad("F1536EF8-92EC-443C-9ED7-FDADF150DA82")]
 	public sealed class Coding4Fun_WorkspaceBoxPackage : Package
 	{
-		private int baseWorkspaceID = (int)PkgCmdIDList.cmdidWorkspaceListCmd;
-		private ArrayList workspaceList = new ArrayList { "branch" };
+		private readonly int _baseWorkspaceId = (int)PkgCmdIDList.cmdidWorkspaceListCmd;
+		private readonly ArrayList _workspaceList;
+		private readonly WorkspaceInfo _workspaceInfo;
 
 		/// <summary>
 		/// Default constructor of the package.
@@ -44,8 +45,11 @@ namespace aquila.Coding4Fun_WorkspaceBox
 		public Coding4Fun_WorkspaceBoxPackage()
 		{
 			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
+			_baseWorkspaceId = (int)PkgCmdIDList.cmdidWorkspaceListCmd;
+			_workspaceList = new ArrayList { "branch" };
+			_workspaceInfo = Workstation.Current.GetLocalWorkspaceInfo(Environment.CurrentDirectory);
 		}
-		
+
 		/////////////////////////////////////////////////////////////////////////////
 		// Overridden Package Implementation
 		#region Package Members
@@ -63,10 +67,10 @@ namespace aquila.Coding4Fun_WorkspaceBox
 			var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 			if (null != mcs)
 			{
-				for (int i = 0; i < workspaceList.Count; i++)
+				for (int i = 0; i < _workspaceList.Count; i++)
 				{
-					var cmdID = new CommandID(GuidList.guidCoding4Fun_WorkspaceBoxCmdSet, baseWorkspaceID + i);
-					var mc = new OleMenuCommand(OnExec, cmdID);
+					var cmdId = new CommandID(GuidList.guidCoding4Fun_WorkspaceBoxCmdSet, _baseWorkspaceId + i);
+					var mc = new OleMenuCommand(OnExec, cmdId);
 					mc.BeforeQueryStatus += OnQueryStatus;
 					mcs.AddCommand(mc);
 				}
@@ -96,14 +100,13 @@ namespace aquila.Coding4Fun_WorkspaceBox
 			var menuCommand = sender as OleMenuCommand;
 			if (null != menuCommand)
 			{
-				var itemIndex = menuCommand.CommandID.ID - baseWorkspaceID;
-				if (itemIndex >= 0 && itemIndex < workspaceList.Count)
+				var itemIndex = menuCommand.CommandID.ID - _baseWorkspaceId;
+				if (itemIndex >= 0 && itemIndex < _workspaceList.Count)
 				{
-					var value = workspaceList[itemIndex] as string;
+					var value = _workspaceList[itemIndex] as string;
 					if (value.Equals("branch"))
 					{
-						var wi = Workstation.Current.GetLocalWorkspaceInfo(Environment.CurrentDirectory);
-						value = wi != null ? wi.DisplayName : "No Workspace";
+						value = _workspaceInfo != null ? _workspaceInfo.DisplayName : "No Workspace";
 					}
 					menuCommand.Text = value;
 				}

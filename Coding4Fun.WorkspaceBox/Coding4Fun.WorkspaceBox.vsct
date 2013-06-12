@@ -39,14 +39,14 @@
 					<CommandName>Coding4Fun</CommandName>
 				</Strings>
 			</Menu>
-			<Menu guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceBoxMenu" type="MenuController" >
+			<Menu guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceToolbar" type="MenuController" >
 				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" />
 				<CommandFlag>DefaultInvisible</CommandFlag>
 				<CommandFlag>DynamicVisibility</CommandFlag>
 				<CommandFlag>TextIsAnchorCommand</CommandFlag>
 				<Strings>
 					<ButtonText></ButtonText>
-					<CommandName>WorkspaceBoxMenu</CommandName>
+					<CommandName>WorkspaceToolbar</CommandName>
 				</Strings>
 			</Menu>
 		</Menus>
@@ -59,8 +59,8 @@
 			<Group guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" priority="0x0000">
 				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="Toolbar"/>
 			</Group>
-			<Group guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceBoxGroup" priority="0x0001">
-				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceBoxMenu"/>
+			<Group guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceGroup" priority="0x0001">
+				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceToolbar"/>
 			</Group>
 		</Groups>
 
@@ -77,7 +77,7 @@
 		  If you do not want an image next to your command, remove the Icon node /> -->
 
 			<Button guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="cmdidWorkspaceListCmd" type="Button">
-				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceBoxGroup" />
+				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceGroup" />
 				<CommandFlag>TextOnly</CommandFlag>
 				<CommandFlag>TextChanges</CommandFlag>
 				<CommandFlag>DefaultInvisible</CommandFlag>
@@ -86,6 +86,17 @@
 				<Strings>
 					<ButtonText>Workspace...</ButtonText>
 					<CommandName>cmdidWorkspaceListCmd</CommandName>
+				</Strings>
+			</Button>
+			<Button guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="cmdidWorkspaceList2Cmd" type="Button">
+				<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceGroup" />
+				<CommandFlag>TextOnly</CommandFlag>
+				<CommandFlag>TextChanges</CommandFlag>
+				<CommandFlag>DefaultInvisible</CommandFlag>
+				<CommandFlag>DynamicVisibility</CommandFlag>
+				<Strings>
+					<ButtonText>Checkout</ButtonText>
+					<CommandName>cmdidWorkspaceList2Cmd</CommandName>
 				</Strings>
 			</Button>
 		</Buttons>
@@ -102,10 +113,11 @@
 		<!-- This is the guid used to group the menu commands together -->
 		<GuidSymbol name="guidCoding4Fun_WorkspaceBoxCmdSet" value="{458389fd-2202-4e28-9113-d4cb39de5a11}">
 			<IDSymbol name="cmdidWorkspaceListCmd" value="0x0100" />
+			<IDSymbol name="cmdidWorkspaceList2Cmd" value="0x0102" />
 			<IDSymbol name="Toolbar" value="0x1000" />
+			<IDSymbol name="WorkspaceToolbar" value="0x1001" />
 			<IDSymbol name="ToolbarGroup" value="0x1050" />
-			<IDSymbol name="WorkspaceBoxMenu" value="0x0101" />
-			<IDSymbol name="WorkspaceBoxGroup" value="0x1051" />
+			<IDSymbol name="WorkspaceGroup" value="0x1051" />
 		</GuidSymbol>
 	</Symbols>
 

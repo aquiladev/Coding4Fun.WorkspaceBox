@@ -4,8 +4,11 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
+using EnvDTE;
+using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace Aquila.Coding4Fun_WorkspaceBox
 {
@@ -46,7 +49,7 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 		{
 			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 			_baseWorkspaceId = (int)PkgCmdIDList.cmdidWorkspaceListCmd;
-			_workspaceList = new ArrayList { "branch" };
+			_workspaceList = new ArrayList { "branch", "checkout" };
 			_workspaceInfo = Workstation.Current.GetLocalWorkspaceInfo(Environment.CurrentDirectory);
 		}
 
@@ -80,19 +83,24 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 
 		private void OnExec(object sender, EventArgs e)
 		{
-			//var menuCommand = sender as OleMenuCommand;
-			//if (null != menuCommand)
-			//{
-			//	int itemIndex = menuCommand.CommandID.ID - baseWorkspaceID;
-			//	if (itemIndex >= 0 && itemIndex < workspaceList.Count)
-			//	{
-			//		//var selection = workspaceList[itemIndex] as string;
-			//		for (int i = itemIndex; i > 0; i--)
-			//		{
-			//			workspaceList[i] = workspaceList[i - 1];
-			//		}
-			//	}
-			//}
+			var menuCommand = sender as OleMenuCommand;
+			if (null != menuCommand)
+			{
+				int itemIndex = menuCommand.CommandID.ID - _baseWorkspaceId;
+				if (itemIndex >= 0 && itemIndex < _workspaceList.Count)
+				{
+					var value = _workspaceList[itemIndex] as string;
+					switch (value)
+					{
+						case "branch":
+							menuCommand.Text = GetCurrentWorkspace();
+							break;
+						case "checkout":
+							CheckoutCurFile();
+							break;
+					}
+				}
+			}
 		}
 
 		private void OnQueryStatus(object sender, EventArgs e)
@@ -104,11 +112,37 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 				if (itemIndex >= 0 && itemIndex < _workspaceList.Count)
 				{
 					var value = _workspaceList[itemIndex] as string;
-					if (value.Equals("branch"))
+					switch (value)
 					{
-						value = _workspaceInfo != null ? _workspaceInfo.DisplayName : "No Workspace";
+						case "branch":
+							value = GetCurrentWorkspace();
+							break;
+						//case "checkout":
+						//	value = "Checkout current file";
+						//	break;
 					}
 					menuCommand.Text = value;
+				}
+			}
+		}
+
+		private string GetCurrentWorkspace()
+		{
+			return _workspaceInfo != null ? _workspaceInfo.DisplayName : "No Workspace";
+		}
+
+		private void CheckoutCurFile()
+		{
+			var app = (DTE)GetService(typeof(SDTE));
+			if (app.ActiveDocument != null)
+			{
+				var text = (TextDocument)app.ActiveDocument.Object(String.Empty);
+				string activeDocumentFullName = app.ActiveDocument.FullName;
+				if (text != null && text.Type.Equals("Text") && _workspaceInfo != null)
+				{
+					var server = new TfsTeamProjectCollection(_workspaceInfo.ServerUri);
+					var workspace = _workspaceInfo.GetWorkspace(server);
+					workspace.PendEdit(activeDocumentFullName);
 				}
 			}
 		}

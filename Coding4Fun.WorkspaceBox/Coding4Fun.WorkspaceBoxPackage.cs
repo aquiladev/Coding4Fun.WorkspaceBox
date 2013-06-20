@@ -34,7 +34,8 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 	[ProvideAutoLoad("F1536EF8-92EC-443C-9ED7-FDADF150DA82")]
 	public sealed class Coding4Fun_WorkspaceBoxPackage : Package
 	{
-		private readonly int _baseWorkspaceId = (int)PkgCmdIDList.cmdidWorkspaceListCmd;
+		private readonly int _workspaceBoxId;
+		private readonly int _checkoutBtnId;
 		private readonly ArrayList _workspaceList;
 		private readonly WorkspaceInfo _workspaceInfo;
 
@@ -48,8 +49,9 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 		public Coding4Fun_WorkspaceBoxPackage()
 		{
 			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
-			_baseWorkspaceId = (int)PkgCmdIDList.cmdidWorkspaceListCmd;
-			_workspaceList = new ArrayList { "branch", "checkout" };
+			_workspaceBoxId = (int)PkgCmdIDList.cmdidWorkspaceBoxCmd;
+			_checkoutBtnId = (int)PkgCmdIDList.cmdidWorkspaceCheckoutCmd;
+			_workspaceList = new ArrayList { "branch" };
 			_workspaceInfo = Workstation.Current.GetLocalWorkspaceInfo(Environment.CurrentDirectory);
 		}
 
@@ -70,65 +72,73 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 			var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 			if (null != mcs)
 			{
-				for (int i = 0; i < _workspaceList.Count; i++)
-				{
-					var cmdId = new CommandID(GuidList.guidCoding4Fun_WorkspaceBoxCmdSet, _baseWorkspaceId + i);
-					var mc = new OleMenuCommand(OnExec, cmdId);
-					mc.BeforeQueryStatus += OnQueryStatus;
-					mcs.AddCommand(mc);
-				}
+				var cmdId = new CommandID(GuidList.guidCoding4Fun_WorkspaceBoxCmdSet, _workspaceBoxId);
+				var workspaceItem = new OleMenuCommand(OnExec, cmdId);
+				workspaceItem.BeforeQueryStatus += OnWorkspaceQueryStatus;
+				mcs.AddCommand(workspaceItem);
+
+				var checkoutBtnId = new CommandID(GuidList.guidCoding4Fun_WorkspaceBoxCmdSet, _checkoutBtnId);
+				var checkoutItem = new OleMenuCommand(MenuItemCallback, checkoutBtnId);
+				checkoutItem.BeforeQueryStatus += OnCheckoutQueryStatus;
+				mcs.AddCommand(checkoutItem);
 			}
 		}
 		#endregion
 
+		private void MenuItemCallback(object sender, EventArgs e)
+		{
+			OleMenuCommand menuCommand = sender as OleMenuCommand;
+			if (menuCommand != null)
+			{
+				CheckoutCurFile();
+				menuCommand.Checked = false;
+			}
+		}
+
 		private void OnExec(object sender, EventArgs e)
 		{
 			var menuCommand = sender as OleMenuCommand;
-			if (null != menuCommand)
+			if (menuCommand != null)
 			{
-				int itemIndex = menuCommand.CommandID.ID - _baseWorkspaceId;
-				if (itemIndex >= 0 && itemIndex < _workspaceList.Count)
+				menuCommand.Text = GetCurrentWorkspace();
+			}
+		}
+
+		private void OnWorkspaceQueryStatus(object sender, EventArgs e)
+		{
+			var menuCommand = sender as OleMenuCommand;
+			if (menuCommand != null)
+			{
+				menuCommand.Text = GetCurrentWorkspace();
+			}
+		}
+
+		private void OnCheckoutQueryStatus(object sender, EventArgs e)
+		{
+			var menuCommand = sender as OleMenuCommand;
+			if (menuCommand != null)
+			{
+				if (HasWorkspace())
 				{
-					var value = _workspaceList[itemIndex] as string;
-					switch (value)
-					{
-						case "branch":
-							menuCommand.Text = GetCurrentWorkspace();
-							break;
-						case "checkout":
-							CheckoutCurFile();
-							break;
-					}
+					menuCommand.Supported = true;
+					menuCommand.Visible = true;
+					menuCommand.Text = Resources.CheckoutCurrentFile;
+				}
+				else
+				{
+					menuCommand.Supported = false;
 				}
 			}
 		}
 
-		private void OnQueryStatus(object sender, EventArgs e)
+		private bool HasWorkspace()
 		{
-			var menuCommand = sender as OleMenuCommand;
-			if (null != menuCommand)
-			{
-				var itemIndex = menuCommand.CommandID.ID - _baseWorkspaceId;
-				if (itemIndex >= 0 && itemIndex < _workspaceList.Count)
-				{
-					var value = _workspaceList[itemIndex] as string;
-					switch (value)
-					{
-						case "branch":
-							value = GetCurrentWorkspace();
-							break;
-						//case "checkout":
-						//	value = "Checkout current file";
-						//	break;
-					}
-					menuCommand.Text = value;
-				}
-			}
+			return _workspaceInfo != null;
 		}
 
 		private string GetCurrentWorkspace()
 		{
-			return _workspaceInfo != null ? _workspaceInfo.DisplayName : "No Workspace";
+			return HasWorkspace() ? _workspaceInfo.DisplayName : Resources.NoWorkspace;
 		}
 
 		private void CheckoutCurFile()

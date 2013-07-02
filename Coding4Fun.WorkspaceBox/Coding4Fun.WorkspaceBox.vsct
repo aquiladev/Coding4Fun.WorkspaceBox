@@ -39,16 +39,6 @@
 		  <CommandName>Coding4Fun</CommandName>
 		</Strings>
 	  </Menu>
-	  <Menu guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceToolbar" type="MenuController" >
-		<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" />
-		<CommandFlag>DefaultInvisible</CommandFlag>
-		<CommandFlag>DynamicVisibility</CommandFlag>
-		<CommandFlag>TextIsAnchorCommand</CommandFlag>
-		<Strings>
-		  <ButtonText></ButtonText>
-		  <CommandName>WorkspaceToolbar</CommandName>
-		</Strings>
-	  </Menu>
 	</Menus>
 
 	<!-- In this section you can define new menu groups. A menu group is a container for 
@@ -58,9 +48,6 @@
 	<Groups>
 	  <Group guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" priority="0x0000">
 		<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="Toolbar"/>
-	  </Group>
-	  <Group guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceGroup" priority="0x0001">
-		<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceToolbar"/>
 	  </Group>
 	</Groups>
 
@@ -77,7 +64,7 @@
 		  If you do not want an image next to your command, remove the Icon node /> -->
 
 	  <Button guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="cmdidWorkspaceBoxCmd" type="Button">
-		<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceGroup" />
+		<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" />
 		<CommandFlag>TextOnly</CommandFlag>
 		<CommandFlag>TextChanges</CommandFlag>
 		<CommandFlag>DefaultInvisible</CommandFlag>
@@ -89,13 +76,13 @@
 		</Strings>
 	  </Button>
 	  <Button guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="cmdidWorkspaceCheckoutCmd" type="Button">
-		<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="WorkspaceGroup" />
+		<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" />
 		<CommandFlag>TextOnly</CommandFlag>
 		<CommandFlag>TextChanges</CommandFlag>
 		<CommandFlag>DefaultInvisible</CommandFlag>
 		<CommandFlag>DynamicVisibility</CommandFlag>
 		<Strings>
-		  <ButtonText>checkout</ButtonText>
+		  <ButtonText>Check Out for Edit...</ButtonText>
 		  <CommandName>cmdidWorkspaceCheckoutCmd</CommandName>
 		</Strings>
 	  </Button>
@@ -115,9 +102,7 @@
 	  <IDSymbol name="cmdidWorkspaceBoxCmd" value="0x0100" />
 	  <IDSymbol name="cmdidWorkspaceCheckoutCmd" value="0x0102" />
 	  <IDSymbol name="Toolbar" value="0x1000" />
-	  <IDSymbol name="WorkspaceToolbar" value="0x1001" />
 	  <IDSymbol name="ToolbarGroup" value="0x1050" />
-	  <IDSymbol name="WorkspaceGroup" value="0x1051" />
 	</GuidSymbol>
   </Symbols>
 

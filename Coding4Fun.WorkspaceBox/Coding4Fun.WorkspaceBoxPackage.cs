@@ -27,7 +27,7 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 	[PackageRegistration(UseManagedResourcesOnly = true)]
 	// This attribute is used to register the information needed to show this package
 	// in the Help/About dialog of Visual Studio.
-	[InstalledProductRegistration("#110", "#112", "1.1", IconResourceID = 400)]
+	[InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
 	// This attribute is needed to let the shell know that this package exposes some menus.
 	[ProvideMenuResource("Menus.ctmenu", 1)]
 	[Guid(GuidList.guidCoding4Fun_WorkspaceBoxPkgString)]
@@ -35,7 +35,7 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 	public sealed class Coding4Fun_WorkspaceBoxPackage : Package
 	{
 		private readonly int _workspaceBoxId;
-		private readonly int _checkoutBtnId;
+		private readonly int _checkoutId;
 		private readonly WorkspaceInfo _workspaceInfo;
 
 		/// <summary>
@@ -49,7 +49,7 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 		{
 			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
 			_workspaceBoxId = (int)PkgCmdIDList.cmdidWorkspaceBoxCmd;
-			_checkoutBtnId = (int)PkgCmdIDList.cmdidWorkspaceCheckoutCmd;
+			_checkoutId = (int)PkgCmdIDList.cmdidCheckoutCmd;
 			_workspaceInfo = Workstation.Current.GetLocalWorkspaceInfo(Environment.CurrentDirectory);
 		}
 
@@ -75,7 +75,7 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 				workspaceItem.BeforeQueryStatus += OnExec;
 				mcs.AddCommand(workspaceItem);
 
-				var checkoutBtnId = new CommandID(GuidList.guidCoding4Fun_WorkspaceBoxCmdSet, _checkoutBtnId);
+				var checkoutBtnId = new CommandID(GuidList.guidCoding4Fun_CheckoutCmdSet, _checkoutId);
 				var checkoutItem = new OleMenuCommand(OnCheckoutExec, checkoutBtnId);
 				checkoutItem.BeforeQueryStatus += OnCheckoutQueryStatus;
 				mcs.AddCommand(checkoutItem);
@@ -94,11 +94,10 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 
 		private void OnCheckoutExec(object sender, EventArgs e)
 		{
-			OleMenuCommand menuCommand = sender as OleMenuCommand;
+			var menuCommand = sender as OleMenuCommand;
 			if (menuCommand != null)
 			{
 				CheckoutCurFile();
-				menuCommand.Checked = false;
 			}
 		}
 
@@ -107,15 +106,13 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 			var menuCommand = sender as OleMenuCommand;
 			if (menuCommand != null)
 			{
+				menuCommand.Supported = false;
+
 				if (HasWorkspace())
 				{
 					menuCommand.Supported = true;
 					menuCommand.Visible = true;
 					menuCommand.Text = Resources.CheckoutCurrentFile;
-				}
-				else
-				{
-					menuCommand.Supported = false;
 				}
 			}
 		}

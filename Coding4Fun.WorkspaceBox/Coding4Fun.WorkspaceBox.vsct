@@ -75,12 +75,13 @@
 		  <CommandName>cmdidWorkspaceBoxCmd</CommandName>
 		</Strings>
 	  </Button>
-	  <Button guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="cmdidWorkspaceCheckoutCmd" type="Button">
+	  <Button guid="guidCoding4Fun_CheckoutCmdSet" id="cmdidCheckoutCmd" type="Button">
 		<Parent guid="guidCoding4Fun_WorkspaceBoxCmdSet" id="ToolbarGroup" />
 		<CommandFlag>TextOnly</CommandFlag>
 		<CommandFlag>TextChanges</CommandFlag>
 		<CommandFlag>DefaultInvisible</CommandFlag>
 		<CommandFlag>DynamicVisibility</CommandFlag>
+		<CommandFlag>DynamicItemStart</CommandFlag>
 		<Strings>
 		  <ButtonText>Check Out for Edit...</ButtonText>
 		  <CommandName>cmdidWorkspaceCheckoutCmd</CommandName>
@@ -100,9 +101,12 @@
 	<!-- This is the guid used to group the menu commands together -->
 	<GuidSymbol name="guidCoding4Fun_WorkspaceBoxCmdSet" value="{458389fd-2202-4e28-9113-d4cb39de5a11}">
 	  <IDSymbol name="cmdidWorkspaceBoxCmd" value="0x0100" />
-	  <IDSymbol name="cmdidWorkspaceCheckoutCmd" value="0x0102" />
 	  <IDSymbol name="Toolbar" value="0x1000" />
 	  <IDSymbol name="ToolbarGroup" value="0x1050" />
+	</GuidSymbol>
+
+	<GuidSymbol name="guidCoding4Fun_CheckoutCmdSet" value="{548389fd-2202-4e28-9113-d4cb39de5a22}">
+	  <IDSymbol name="cmdidCheckoutCmd" value="0x0101" />
 	</GuidSymbol>
   </Symbols>
 

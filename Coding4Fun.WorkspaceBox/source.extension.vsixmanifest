@@ -6,8 +6,7 @@
 		<Description xml:space="preserve">TFS Workspace Box</Description>
 		<MoreInfo>https://github.com/aquiladev/Coding4Fun.WorkspaceBox.git</MoreInfo>
 		<License>MIT-LICENSE.txt</License>
-		<Icon>WorkspaceBoxIco.png</Icon>
-		<PreviewImage>WorkspaceBox.jpg</PreviewImage>
+		<Icon>WorkspaceBox.png</Icon>
 		<Tags>TFS, Workspace, Coding4Fun</Tags>
 	</Metadata>
 	<Installation AllUsers="true">

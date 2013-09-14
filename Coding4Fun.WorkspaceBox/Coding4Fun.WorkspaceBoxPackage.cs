@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.ComponentModel.Design;
 using EnvDTE;
@@ -6,6 +7,7 @@ using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TeamFoundation.VersionControl;
 
 namespace Aquila.Coding4Fun_WorkspaceBox
 {
@@ -18,8 +20,9 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 	{
 		private readonly int _workspaceBoxId;
 		private readonly int _checkoutId;
-		
+
 		private string _currentDirectory;
+		private string _currentFile;
 		private WorkspaceInfo _workspaceInfo;
 
 		public Coding4Fun_WorkspaceBoxPackage()
@@ -37,7 +40,7 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 			if (null != mcs)
 			{
 				var cmdId = new CommandID(GuidList.guidCoding4Fun_WorkspaceBoxCmdSet, _workspaceBoxId);
-				var workspaceItem = new OleMenuCommand(OnExec, cmdId);
+				var workspaceItem = new OleMenuCommand(OnGoToSourceControl, cmdId);
 				workspaceItem.BeforeQueryStatus += OnExec;
 				mcs.AddCommand(workspaceItem);
 
@@ -58,12 +61,27 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 			}
 		}
 
-		private void OnCheckoutExec(object sender, EventArgs e)
+		private void OnGoToSourceControl(object sender, EventArgs e)
 		{
 			var menuCommand = sender as OleMenuCommand;
 			if (menuCommand != null)
 			{
-				CheckoutCurFile();
+				var app = (DTE)GetService(typeof(SDTE));
+
+				if (app.ActiveDocument != null)
+				{
+					var path = app.ActiveDocument.FullName;
+					var vc = app.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
+					if (vc != null)
+					{
+						_workspaceInfo = Workstation.Current.GetLocalWorkspaceInfo(path);
+						var server = new TfsTeamProjectCollection(_workspaceInfo.ServerUri);
+						var workspace = _workspaceInfo.GetWorkspace(server);
+						var serverPath = workspace.GetServerItemForLocalItem(path);
+						vc.Explorer.Navigate(serverPath);
+						app.ExecuteCommand("View.TfsSourceControlExplorer");
+					}
+				}
 			}
 		}
 
@@ -75,12 +93,32 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 				return;
 			}
 
-			menuCommand.Supported = false;
-			if (HasWorkspace())
+			var dte = (_DTE)GetService(typeof(_DTE));
+			var doc = dte.ActiveDocument == null
+				? null
+				: (TextDocument)dte.ActiveDocument.Object();
+			if (doc != null && _currentFile == dte.ActiveDocument.FullName)
 			{
-				menuCommand.Supported = true;
-				menuCommand.Visible = true;
-				menuCommand.Text = Resources.CheckoutCurrentFile;
+				return;
+			}
+			_currentFile = dte.ActiveDocument.FullName;
+			menuCommand.Supported = false;
+			if (!HasWorkspace() || HasPandingChangesAlready())
+			{
+				return;
+			}
+
+			menuCommand.Supported = true;
+			menuCommand.Visible = true;
+			menuCommand.Text = Resources.CheckoutCurrentFile;
+		}
+
+		private void OnCheckoutExec(object sender, EventArgs e)
+		{
+			var menuCommand = sender as OleMenuCommand;
+			if (menuCommand != null)
+			{
+				CheckoutCurFile();
 			}
 		}
 
@@ -101,24 +139,54 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 			return HasWorkspace() ? _workspaceInfo.DisplayName : Resources.NoWorkspace;
 		}
 
+		private bool HasPandingChangesAlready()
+		{
+			var app = (DTE)GetService(typeof(SDTE));
+			var doc = app.ActiveDocument == null
+				? null
+				: (TextDocument)app.ActiveDocument.Object();
+			if (!IsCanPendEdit(doc))
+			{
+				return false;
+			}
+
+			if (app.ActiveDocument != null)
+			{
+				var activeDocumentFullName = app.ActiveDocument.FullName;
+				var server = new TfsTeamProjectCollection(_workspaceInfo.ServerUri);
+				var workspace = _workspaceInfo.GetWorkspace(server);
+				return workspace.GetPendingChanges(activeDocumentFullName).Any();
+			}
+
+			return false;
+		}
+
 		private void CheckoutCurFile()
 		{
 			var app = (DTE)GetService(typeof(SDTE));
-			if (app.ActiveDocument == null)
+			var doc = app.ActiveDocument == null
+				? null
+				: (TextDocument)app.ActiveDocument.Object();
+			if (HasWorkspace() && IsCanPendEdit(doc) && app.ActiveDocument != null)
 			{
-				return;
-			}
+				var activeDocumentFullName = app.ActiveDocument.FullName;
+				var server = new TfsTeamProjectCollection(_workspaceInfo.ServerUri);
+				var workspace = _workspaceInfo.GetWorkspace(server);
+				workspace.PendEdit(activeDocumentFullName);
 
-			var text = (TextDocument)app.ActiveDocument.Object(String.Empty);
-			var activeDocumentFullName = app.ActiveDocument.FullName;
-			if (text == null || !text.Type.Equals("Text") || !HasWorkspace())
-			{
-				return;
+				RefreshPendingChanges(app);
 			}
+		}
 
-			var server = new TfsTeamProjectCollection(_workspaceInfo.ServerUri);
-			var workspace = _workspaceInfo.GetWorkspace(server);
-			workspace.PendEdit(activeDocumentFullName);
+		private static bool IsCanPendEdit(TextDocument doc)
+		{
+			return doc != null && doc.Type.Equals("Text");
+		}
+
+		private static void RefreshPendingChanges(_DTE application)
+		{
+			application.ExecuteCommand("View.TfsPendingChanges");
+			application.ExecuteCommand("View.Refresh");
 		}
 	}
 }

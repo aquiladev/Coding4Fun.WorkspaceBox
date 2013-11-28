@@ -76,14 +76,13 @@
 
 	<Symbols>
 		<!-- This is the package guid. -->
-		<GuidSymbol name="GuidCoding4Fun_WorkspaceBoxPkg" value="{593fa676-e509-443f-b1de-2237d5f7e545}" />
+		<GuidSymbol name="GuidCoding4Fun_WorkspaceBoxPkg" value="{EC96722B-F4FB-432B-B4C3-5A3B33539698}" />
 
 		<GuidSymbol name="GuidCoding4FunCmdSet" value="{1508C2F6-4C2C-4880-B5E2-64750036AADF}">
 			<IDSymbol name="Coding4FunMenu" value="0x1100"/>
 			<IDSymbol name="Coding4FunToolbar" value="0x1110" />
 			<IDSymbol name="Coding4FunMenuGroup" value="0x1114" />
 			<IDSymbol name="Coding4FunToolbarGroup" value="0x1115" />
-			
 			<IDSymbol name="cmdidWorkspaceBoxCmd" value="0x0100" />
 			<IDSymbol name="cmdidCheckoutCmd" value="0x0101" />
 

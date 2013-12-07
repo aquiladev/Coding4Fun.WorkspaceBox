@@ -41,7 +41,6 @@
 				<CommandFlag>DefaultDisabled</CommandFlag>
 				<CommandFlag>DefaultInvisible</CommandFlag>
 				<CommandFlag>DynamicVisibility</CommandFlag>
-				<!--<CommandFlag>DynamicItemStart</CommandFlag>-->
 				<Strings>
 					<ButtonText>Workspace...</ButtonText>
 					<CommandName>Open in Source Control Explorer</CommandName>
@@ -54,7 +53,6 @@
 				<CommandFlag>DefaultDisabled</CommandFlag>
 				<CommandFlag>DefaultInvisible</CommandFlag>
 				<CommandFlag>DynamicVisibility</CommandFlag>
-				<!--<CommandFlag>DynamicItemStart</CommandFlag>-->
 				<Strings>
 					<ButtonText>Check Out for Edit...</ButtonText>
 					<CommandName>Check out current file</CommandName>

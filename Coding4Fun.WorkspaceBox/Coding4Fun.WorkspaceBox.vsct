@@ -41,7 +41,7 @@
 				<CommandFlag>DefaultDisabled</CommandFlag>
 				<CommandFlag>DefaultInvisible</CommandFlag>
 				<CommandFlag>DynamicVisibility</CommandFlag>
-				<CommandFlag>DynamicItemStart</CommandFlag>
+				<!--<CommandFlag>DynamicItemStart</CommandFlag>-->
 				<Strings>
 					<ButtonText>Workspace...</ButtonText>
 					<CommandName>Open in Source Control Explorer</CommandName>
@@ -54,19 +54,19 @@
 				<CommandFlag>DefaultDisabled</CommandFlag>
 				<CommandFlag>DefaultInvisible</CommandFlag>
 				<CommandFlag>DynamicVisibility</CommandFlag>
-				<CommandFlag>DynamicItemStart</CommandFlag>
+				<!--<CommandFlag>DynamicItemStart</CommandFlag>-->
 				<Strings>
 					<ButtonText>Check Out for Edit...</ButtonText>
 					<CommandName>Check out current file</CommandName>
 				</Strings>
 			</Button>
 
-			<Button guid="GuidCoding4FunCmdSet" id="cmdidMyCommand" priority="0x0100" type="Button">
+			<!--<Button guid="GuidCoding4FunCmdSet" id="cmdidMyCommand" priority="0x0100" type="Button">
 				<Parent guid="GuidCoding4FunCmdSet" id="Coding4FunMenuGroup" />
 				<Strings>
 					<ButtonText>test</ButtonText>
 				</Strings>
-			</Button>
+			</Button>-->
 		</Buttons>
 	</Commands>
 

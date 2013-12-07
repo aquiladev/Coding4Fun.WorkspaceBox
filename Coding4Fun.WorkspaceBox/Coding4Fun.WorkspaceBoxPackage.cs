@@ -35,7 +35,6 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 		#region Package Members
 		protected override void Initialize()
 		{
-			Debug.WriteLine("================Initialize {0}====================", _i1++);
 			base.Initialize();
 
 			var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
@@ -58,8 +57,6 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 
 		private void OnExec(object sender, EventArgs e)
 		{
-			//~300 t
-			Debug.WriteLine("================OnExec {0}====================", _oe1++);
 			var menuCommand = sender as OleMenuCommand;
 			if (menuCommand != null)
 			{
@@ -69,7 +66,6 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 
 		private void OnGoToSourceControl(object sender, EventArgs e)
 		{
-			Debug.WriteLine("================OnGoToSourceControl {0}====================", _ogs1++);
 			var menuCommand = sender as OleMenuCommand;
 			if (menuCommand != null)
 			{
@@ -94,8 +90,6 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 
 		private void OnCheckoutQueryStatus(object sender, EventArgs e)
 		{
-			//~280 t
-			Debug.WriteLine("================OnCheckoutQueryStatus {0}====================", _ocq1++);
 			var menuCommand = sender as OleMenuCommand;
 			if (menuCommand == null)
 			{
@@ -124,7 +118,6 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 
 		private void OnCheckoutExec(object sender, EventArgs e)
 		{
-			Debug.WriteLine("================OnCheckoutExec {0}====================", _oce1++);
 			var menuCommand = sender as OleMenuCommand;
 			if (menuCommand != null)
 			{
@@ -134,15 +127,11 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 
 		private bool HasWorkspace()
 		{
-			//~ 320 t
-			Debug.WriteLine("================HasWorkspace {0}====================", _hw1++);
 			return _workspaceInfo != null;
 		}
 
 		private string GetCurrentWorkspace()
 		{
-			//~ 320 t
-			Debug.WriteLine("================GetCurrentWorkspace {0}====================", _gcw1++);
 			var dte = (_DTE)GetService(typeof(_DTE));
 			if (string.IsNullOrEmpty(_currentDirectory) ||
 				_currentDirectory != dte.Solution.FullName)
@@ -155,8 +144,6 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 
 		private bool HasPandingChangesAlready()
 		{
-			// 1 t
-			Debug.WriteLine("================HasPandingChangesAlready {0}====================", _hpca++);
 			var app = (DTE)GetService(typeof(SDTE));
 			var doc = app.ActiveDocument == null
 				? null
@@ -174,7 +161,6 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 
 		private void CheckoutCurFile()
 		{
-			Debug.WriteLine("================CheckoutCurFile {0}====================", _ccf++);
 			var app = (DTE)GetService(typeof(SDTE));
 			var doc = app.ActiveDocument == null
 				? null
@@ -192,28 +178,19 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 
 		private static bool IsCanPendEdit(TextDocument doc)
 		{
-			// 1 t
-			Debug.WriteLine("================IsCanPendEdit {0}====================", _icpe++);
 			return doc != null && doc.Type.Equals("Text");
 		}
 
 		private static void RefreshPendingChanges(_DTE application)
 		{
-			Debug.WriteLine("================RefreshPendingChanges {0}====================", _rpc++);
-			application.ExecuteCommand("View.TfsPendingChanges");
-			application.ExecuteCommand("View.Refresh");
+            try
+            {
+                application.ExecuteCommand("View.TfsPendingChanges");
+                application.ExecuteCommand("View.Refresh");
+            }
+            catch{
+                //TODO log
+            }
 		}
-
-		private int _i1;
-		private int _oe1;
-		private int _ogs1;
-		private int _ocq1;
-		private int _oce1;
-		private int _hw1;
-		private int _gcw1;
-		private int _hpca;
-		private int _ccf;
-		private static int _icpe;
-		private static int _rpc;
 	}
 }

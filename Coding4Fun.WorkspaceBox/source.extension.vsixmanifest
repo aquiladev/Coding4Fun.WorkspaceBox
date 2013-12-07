@@ -1,22 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
-	<Metadata>
-		<Identity Id="593fa676-e509-443f-b1de-2237d5f7e545" Version="0.3" Language="en-US" Publisher="Aquila" />
-		<DisplayName>Coding4Fun.WorkspaceBox</DisplayName>
-		<Description xml:space="preserve">TFS Workspace Box</Description>
-		<MoreInfo>https://github.com/aquiladev/Coding4Fun.WorkspaceBox.git</MoreInfo>
-		<License>MIT-LICENSE.txt</License>
-		<Icon>WorkspaceBox.png</Icon>
-		<Tags>TFS, Workspace, Coding4Fun</Tags>
-	</Metadata>
-	<Installation AllUsers="true">
-		<InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="11.0" />
-	</Installation>
-	<Dependencies>
-		<Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
-		<Dependency Id="Microsoft.VisualStudio.MPF.11.0" DisplayName="Visual Studio MPF 11.0" d:Source="Installed" Version="11.0" />
-	</Dependencies>
-	<Assets>
-		<Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
-	</Assets>
+  <Metadata>
+    <Identity Id="593fa676-e509-443f-b1de-2237d5f7e545" Version="0.6.1" Language="en-US" Publisher="Sergii Bomko" />
+    <DisplayName>Coding4Fun.WorkspaceBox</DisplayName>
+    <Description xml:space="preserve">TFS Workspace Box</Description>
+    <MoreInfo>http://visualstudiogallery.msdn.microsoft.com/12b30529-9a53-4c84-a1c2-381438eb1186</MoreInfo>
+    <License>MIT-LICENSE.txt</License>
+    <Icon>WorkspaceBox.png</Icon>
+    <Tags>TFS, Workspace, Coding4Fun</Tags>
+  </Metadata>
+  <Installation AllUsers="true">
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="11.0" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.11.0" DisplayName="Visual Studio MPF 11.0" d:Source="Installed" Version="11.0" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+  </Assets>
 </PackageManifest>

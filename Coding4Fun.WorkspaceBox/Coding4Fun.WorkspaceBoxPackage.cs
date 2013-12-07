@@ -75,9 +75,7 @@ namespace Aquila.Coding4Fun_WorkspaceBox
 				{
 					var path = app.ActiveDocument.FullName;
 					var vc = app.GetObject("Microsoft.VisualStudio.TeamFoundation.VersionControl.VersionControlExt") as VersionControlExt;
-					if (vc != null &&
-						vc.Explorer != null &&
-						vc.Explorer.Connected)
+					if (vc != null && vc.Explorer != null)
 					{
 						_workspaceInfo = Workstation.Current.GetLocalWorkspaceInfo(path);
 						var server = new TfsTeamProjectCollection(_workspaceInfo.ServerUri);
